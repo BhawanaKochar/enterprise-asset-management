@@ -25,6 +25,10 @@
 
     <modules>
         <module>discovery-service</module>
+        <module>common-library</module>
+        <module>employee-service</module>
+        <module>asset-service</module>
+        <module>api-gateway</module>
     </modules>
 
     <properties>
