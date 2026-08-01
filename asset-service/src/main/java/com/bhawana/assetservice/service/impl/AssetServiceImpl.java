@@ -1,5 +1,6 @@
 package com.bhawana.assetservice.service.impl;
 
+import com.bhawana.assetservice.client.EmployeeClient;
 import com.bhawana.assetservice.dto.EmployeeDTO;
 import com.bhawana.commonlibrary.exception.ResourceNotFoundException;
 import com.bhawana.assetservice.entity.Asset;
@@ -15,13 +16,20 @@ public class AssetServiceImpl implements AssetService {
 
     private final AssetRepository repository;
 
-    private final RestTemplate restTemplate;
-
-    public AssetServiceImpl(AssetRepository repository,
-                            RestTemplate restTemplate) {
+//    private final RestTemplate restTemplate;
+    private final EmployeeClient employeeClient;
+//    public AssetServiceImpl(AssetRepository repository,
+//                            RestTemplate restTemplate) {
+//
+//        this.repository = repository;
+//        this.restTemplate = restTemplate;
+//    }
+    public AssetServiceImpl(
+            AssetRepository repository,
+            EmployeeClient employeeClient) {
 
         this.repository = repository;
-        this.restTemplate = restTemplate;
+        this.employeeClient = employeeClient;
     }
 
     @Override
@@ -91,9 +99,11 @@ public class AssetServiceImpl implements AssetService {
         String employeeServiceUrl =
                 "http://localhost:8081/api/employees/" + employeeId;
 
-        EmployeeDTO employee = restTemplate.getForObject(
-                employeeServiceUrl,
-                EmployeeDTO.class);
+//        EmployeeDTO employee = restTemplate.getForObject(
+//                employeeServiceUrl,
+//                EmployeeDTO.class);
+        EmployeeDTO employee =
+                employeeClient.getEmployee(employeeId);
 
         if (employee == null) {
             throw new ResourceNotFoundException(
