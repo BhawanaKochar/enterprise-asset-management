@@ -15,4 +15,8 @@ public interface AssetService {
     Asset updateAsset(Long id, Asset asset);
 
     void deleteAsset(Long id);
+
+    Asset assignAsset(Long assetId, Long employeeId);
+
+    Asset returnAsset(Long assetId);
 }

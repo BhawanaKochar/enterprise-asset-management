@@ -1,10 +1,12 @@
 package com.bhawana.assetservice.service.impl;
 
+import com.bhawana.assetservice.dto.EmployeeDTO;
 import com.bhawana.commonlibrary.exception.ResourceNotFoundException;
 import com.bhawana.assetservice.entity.Asset;
 import com.bhawana.assetservice.repository.AssetRepository;
 import com.bhawana.assetservice.service.AssetService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -13,8 +15,13 @@ public class AssetServiceImpl implements AssetService {
 
     private final AssetRepository repository;
 
-    public AssetServiceImpl(AssetRepository repository) {
+    private final RestTemplate restTemplate;
+
+    public AssetServiceImpl(AssetRepository repository,
+                            RestTemplate restTemplate) {
+
         this.repository = repository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -70,5 +77,46 @@ public class AssetServiceImpl implements AssetService {
         Asset asset = getAssetById(id);
 
         repository.delete(asset);
+    }
+
+    @Override
+    public Asset assignAsset(Long assetId, Long employeeId) {
+
+        Asset asset = getAssetById(assetId);
+
+        if ("ASSIGNED".equalsIgnoreCase(asset.getStatus())) {
+            throw new IllegalArgumentException("Asset is already assigned.");
+        }
+
+        String employeeServiceUrl =
+                "http://localhost:8081/api/employees/" + employeeId;
+
+        EmployeeDTO employee = restTemplate.getForObject(
+                employeeServiceUrl,
+                EmployeeDTO.class);
+
+        if (employee == null) {
+            throw new ResourceNotFoundException(
+                    "Employee not found with id : " + employeeId);
+        }
+
+        asset.setAssignedEmployeeId(employeeId);
+        asset.setStatus("ASSIGNED");
+
+        return repository.save(asset);
+    }
+    @Override
+    public Asset returnAsset(Long assetId) {
+
+        Asset asset = getAssetById(assetId);
+
+        if (!"ASSIGNED".equalsIgnoreCase(asset.getStatus())) {
+            throw new IllegalArgumentException("Asset is not assigned.");
+        }
+
+        asset.setAssignedEmployeeId(null);
+        asset.setStatus("AVAILABLE");
+
+        return repository.save(asset);
     }
 }

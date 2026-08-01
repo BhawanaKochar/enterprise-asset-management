@@ -43,4 +43,17 @@ public class AssetController {
         service.deleteAsset(id);
         return "Asset deleted successfully";
     }
+
+    @PostMapping("/{assetId}/assign/{employeeId}")
+    public Asset assignAsset(@PathVariable Long assetId,
+                             @PathVariable Long employeeId) {
+
+        return service.assignAsset(assetId, employeeId);
+    }
+
+    @PostMapping("/{assetId}/return")
+    public Asset returnAsset(@PathVariable Long assetId) {
+
+        return service.returnAsset(assetId);
+    }
 }
