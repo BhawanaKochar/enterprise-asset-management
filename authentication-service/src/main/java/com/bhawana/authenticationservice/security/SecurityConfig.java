@@ -23,11 +23,15 @@ public class SecurityConfig {
                                 "/saml2/**",
                                 "/login/**"
                         ).permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
 
                 .saml2Login(saml -> saml
-                .defaultSuccessUrl("/auth/success", true))
+                        .defaultSuccessUrl("/auth/success", true)
+                )
+
                 .saml2Logout(Customizer.withDefaults())
+
                 .saml2Metadata(Customizer.withDefaults());
 
         return http.build();
