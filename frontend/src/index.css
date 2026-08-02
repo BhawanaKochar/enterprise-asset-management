@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  background: #f5f7fa;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-card {
+  max-width: 600px;
+}
+
+.navbar .nav-link.active {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card {
+  border: 0;
+}

@@ -27,7 +27,7 @@ public class SecurityConfig {
                 )
 
                 .saml2Login(saml -> saml
-                        .defaultSuccessUrl("/auth/success", true)
+                        .defaultSuccessUrl("http://localhost:5173/dashboard", true)
                 )
 
                 .saml2Logout(Customizer.withDefaults())
