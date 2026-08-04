@@ -17,12 +17,12 @@ public class GatewayConfig {
 
         return route("employee-service")
                 .GET("/api/employees/**", http())
-                .before(uri("http://localhost:8081"))
+                .before(uri("http://employee-service:8081"))
                 .build()
 
                 .and(route("asset-service")
                         .GET("/api/assets/**", http())
-                        .before(uri("http://localhost:8082"))
+                        .before(uri("http://asset-service:8082"))
                         .build());
     }
 }

@@ -1,0 +1,88 @@
+version: "3.9"
+
+services:
+
+  discovery-service:
+    build:
+      context: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    restart: unless-stopped
+    networks:
+      - eam-network
+
+  authentication-service:
+    build:
+      context: ./authentication-service
+    container_name: authentication-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+    networks:
+      - eam-network
+
+  employee-service:
+    build:
+      context: ./employee-service
+    container_name: employee-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+    networks:
+      - eam-network
+
+  asset-service:
+    build:
+      context: ./asset-service
+    container_name: asset-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+    networks:
+      - eam-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - discovery-service
+      - authentication-service
+      - employee-service
+      - asset-service
+    restart: unless-stopped
+    networks:
+      - eam-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api-gateway
+    restart: unless-stopped
+    networks:
+      - eam-network
+
+networks:
+  eam-network:
+    driver: bridge
